@@ -28,11 +28,15 @@ def process_page(response):
             continue
         article.append(e)
 
+    categories = [a.attrib["href"].split(":")[-1] for a in doc("#catlinks li a")
+            if not "_" in a.attrib["href"]]
+
     article = article.html()
     return {
         "published_date": published_date,
         "is_draft": is_draft,
         "article": article.strip() if article else "",
+        "categories": categories,
     }
 
 
@@ -73,6 +77,7 @@ class LoadDemoData(object):
             print "URL: %s" % url
             print "Published: %s" % data[url]["published_date"]
             print "Draft: %s" % data[url]["is_draft"]
+            print "Categories: %s" % data[url]["categories"]
             print ""
             print data[url]["article"]
             print "\n\n"
