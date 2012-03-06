@@ -48,6 +48,7 @@ class LoadDemoData(object):
     """
     Load in initial demo data from WikiNews
     """
+    requires_armstrong = True
 
     def build_parser(self, parser):
         parser.add_argument('--number', default='5',
