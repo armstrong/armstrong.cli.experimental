@@ -33,6 +33,7 @@ def process_page(response):
 
     article = article.html()
     return {
+        "title": doc.find("h1").text(),
         "published_date": published_date,
         "is_draft": is_draft,
         "article": article.strip() if article else "",
@@ -55,6 +56,9 @@ class LoadDemoData(object):
                 help='location to start a new Armstrong project')
 
     def __call__(self, number=5, **kwargs):
+        from armstrong.apps.articles.models import Article
+        from armstrong.core.arm_sections.models import Section
+
         data = {}
         for i in range(int(number)):
             date = today - datetime.timedelta(days=i)
@@ -68,6 +72,9 @@ class LoadDemoData(object):
             for a in doc.find("div.mw-content-ltr li a"):
                 if is_recap_post(a):
                     continue
+                slug = a.attrib["href"].split("/")[-1]
+                if Article.objects.filter(slug=slug).count() > 0:
+                    continue
                 urls.append(async.get("%s%s" % (BASE_URL, a.attrib["href"])))
             responses = async.map(urls)
             for i in range(len(responses)):
@@ -75,15 +82,16 @@ class LoadDemoData(object):
             print "grabbed %d for %s" % (len(responses), date)
 
         for url in data:
-            print "-" * 80
-            print "URL: %s" % url
-            print "Published: %s" % data[url]["published_date"]
-            print "Draft: %s" % data[url]["is_draft"]
-            print "Categories: %s" % data[url]["categories"]
-            print ""
-            print data[url]["article"]
-            print "\n\n"
-
+            slug = url.split("/")[-1]
+            article = Article.objects.create(
+                title=data[url]["title"],
+                slug=slug,
+                pub_status="D" if data[url]["is_draft"] else "P",
+                body=data[url]["article"],
+                pub_date=data[url]["published_date"],
+            )
+            for category in data[url]["categories"]:
+                article.sections.add(Section.objects.get_or_create(title=category)[0])
 
 load_demo_data = LoadDemoData()
 if __name__ == "__main__":
