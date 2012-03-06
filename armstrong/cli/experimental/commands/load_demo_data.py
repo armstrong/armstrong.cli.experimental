@@ -94,5 +94,3 @@ class LoadDemoData(object):
                 article.sections.add(Section.objects.get_or_create(title=category)[0])
 
 load_demo_data = LoadDemoData()
-if __name__ == "__main__":
-    load_demo_data()
