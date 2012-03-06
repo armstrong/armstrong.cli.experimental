@@ -54,7 +54,6 @@ class LoadDemoData(object):
                 help='location to start a new Armstrong project')
 
     def __call__(self, number=5, **kwargs):
-        urls = []
         data = {}
         for i in range(int(number)):
             date = today - datetime.timedelta(days=i)
@@ -64,6 +63,7 @@ class LoadDemoData(object):
                 raise Exception("Unable to process response: %d" % response.status_code)
                 continue
             doc = pq(response.text)
+            urls = []
             for a in doc.find("div.mw-content-ltr li a"):
                 if is_recap_post(a):
                     continue
