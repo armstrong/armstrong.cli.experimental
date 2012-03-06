@@ -50,12 +50,13 @@ class LoadDemoData(object):
     """
 
     def build_parser(self, parser):
-        pass
+        parser.add_argument('--number', default='5',
+                help='location to start a new Armstrong project')
 
-    def __call__(self, **kwargs):
+    def __call__(self, number=5, **kwargs):
         urls = []
         data = {}
-        for i in range(5):
+        for i in range(int(number)):
             date = today - datetime.timedelta(days=i)
             url = CATEGORY_URL % (date.strftime("%B_%%d,_%Y") % date.day)
             response = requests.get(url)
