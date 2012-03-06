@@ -1,8 +1,6 @@
 import datetime
 from pyquery import PyQuery as pq
 import re
-import requests
-from requests import async
 
 today = datetime.datetime.now()
 BASE_URL = "http://en.wikinews.org"
@@ -56,11 +54,27 @@ class LoadDemoData(object):
                 help='location to start a new Armstrong project')
 
     def __call__(self, number=5, **kwargs):
+
+        self.create_front_page_well()
+        self.fetch_articles(number)
+
+    def create_front_page_well(self):
+        from armstrong.core.arm_wells.models import Well
+        from armstrong.core.arm_wells.models import WellType
+        well_type, created = WellType.objects.get_or_create(
+                title="Front Page", slug="front_page")
+        Well.objects.create(type=well_type,
+                pub_date=datetime.datetime.now())
+
+    def fetch_articles(self, number_of_days):
         from armstrong.apps.articles.models import Article
         from armstrong.core.arm_sections.models import Section
+        from django.template.defaultfilters import slugify
+        import requests
+        from requests import async
 
         data = {}
-        for i in range(int(number)):
+        for i in range(int(number_of_days)):
             date = today - datetime.timedelta(days=i)
             url = CATEGORY_URL % (date.strftime("%B_%%d,_%Y") % date.day)
             response = requests.get(url)
@@ -85,12 +99,14 @@ class LoadDemoData(object):
             slug = url.split("/")[-1]
             article = Article.objects.create(
                 title=data[url]["title"],
-                slug=slug,
+                slug=slugify(slug),
                 pub_status="D" if data[url]["is_draft"] else "P",
                 body=data[url]["article"],
                 pub_date=data[url]["published_date"],
             )
             for category in data[url]["categories"]:
-                article.sections.add(Section.objects.get_or_create(title=category)[0])
+                article.sections.add(Section.objects.get_or_create(title=category,
+                        slug=slugify(category))[0])
+
 
 load_demo_data = LoadDemoData()
