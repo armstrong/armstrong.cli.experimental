@@ -15,7 +15,6 @@ def process_page(response):
                 "%A, %B %d, %Y")
     article = pq("<article>")
     is_draft = False
-    # import ipdb; ipdb.set_trace()
     for e in doc.find("div.mw-content-ltr").children():
         if e.tag == "center":
             break  # Break as soon as we see the bottom "contribute" call to action
