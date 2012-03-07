@@ -34,12 +34,15 @@ def process_page(response):
             if not "_" in a.attrib["href"]]
 
     article = article.html()
+    p_tags = pq(article).children().not_("div")
+    summary = p_tags[2].text_content() if len(p_tags) >= 3 else ""
     return {
         "title": doc.find("h1").text(),
         "published_date": published_date,
         "is_draft": is_draft,
         "article": article.strip() if article else "",
         "categories": categories,
+        "summary": summary,
     }
 
 
@@ -107,6 +110,7 @@ class LoadDemoData(object):
                 pub_status="D" if data[url]["is_draft"] else "P",
                 body=data[url]["article"],
                 pub_date=data[url]["published_date"],
+                summary=data[url]["summary"]
             )
             for category in data[url]["categories"]:
                 article.sections.add(Section.objects.get_or_create(title=category,
