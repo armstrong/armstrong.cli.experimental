@@ -23,7 +23,8 @@ def process_page(response):
             continue
         if not is_draft:
             is_draft = "metadata" in e.attrib.get("class", "")
-            continue
+            if is_draft:
+                continue
         article.append(e)
 
     categories = [a.attrib["href"].split(":")[-1] for a in doc("#catlinks li a")
