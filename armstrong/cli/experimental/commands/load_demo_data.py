@@ -24,7 +24,11 @@ def process_page(response):
             is_draft = "metadata" in e.attrib.get("class", "")
             if is_draft:
                 continue
-        article.append(e)
+        if e.tag == "h2":
+            h2 = pq("<h2>").text(pq(".mw-headline", e).text())
+            article.append(h2)
+        else:
+            article.append(e)
 
     categories = [a.attrib["href"].split(":")[-1] for a in doc("#catlinks li a")
             if not "_" in a.attrib["href"]]
