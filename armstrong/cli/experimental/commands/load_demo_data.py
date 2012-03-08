@@ -13,6 +13,8 @@ def process_page(response):
     if published_date:
         published_date = datetime.datetime.strptime(published_date.text(),
                 "%A, %B %d, %Y")
+    else:
+        published_date = datetime.datetime.now()
     article = pq("<article>")
     is_draft = False
     for e in doc.find("div.mw-content-ltr").children():
