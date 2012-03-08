@@ -1,7 +1,7 @@
 {
     "name": "armstrong.cli.experimental",
     "version": "0.1.0",
-    "description": "Provides basic commands needed for Armstrong scaffolding",
+    "description": "Experimental features for armstrong.cli",
     "entry_points": {
         "armstrong.commands": [
             "load_demo_data = armstrong.cli.experimental.commands.load_demo_data:load_demo_data"
