@@ -1,0 +1,15 @@
+{
+    "name": "armstrong.cli.experimental",
+    "version": "0.1.0"
+    "description": "Provides basic commands needed for Armstrong scaffolding",
+    "entry_points": {
+        "armstrong.commands": [
+        ]
+    },
+    "install_requires": [
+        "gevent==0.13.6",
+        "pyquery==1.1.1",
+        "requests==0.10.6"
+    ]
+
+}

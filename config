@@ -1,0 +1,8 @@
+ {
+  "Python": {
+    "python": "/Users/travis/.virtualenvs/armstrong.cli/bin/python",
+    "pythonExtraPaths": [
+      "/Users/travis/.virtualenvs/armstrong.cli/lib/python2.7/site-packages/"
+    ]
+  }
+}
